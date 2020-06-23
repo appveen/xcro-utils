@@ -2,7 +2,7 @@
 const readChunk = require('read-chunk');
 const fileType = require('file-type');
 const filesSupported = process.env.FILE_TYPES_SUPPORTED ? process.env.FILE_TYPES_SUPPORTED.split(',') :
-    ['png', 'jpg', 'jpeg-jpg', 'txt', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'pdf', 'ods', 'xps-zip', 'tif', 'tiff-tif', 'msg', 'eml=52657475726E2D50'];
+    ['png', 'jpg', 'jpeg-jpg', 'txt', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'pdf', 'ods', 'xps-zip', 'tif', 'tiff-tif', 'msg', 'eml'];
 let fileKyVl = {};
 let fileMagicKyVl = {};
 filesSupported.map(el => {
@@ -47,8 +47,9 @@ function fileValidator(options, ext) {
     if (['doc', 'xls', 'ppt', 'msg'].indexOf(ext) > -1) return validateOldMSOffice(options);
     let buffer = options.type == 'Binary' ? readChunk.sync(options.path, 0, fileType.minimumBytes) : toArrayBuffer(options.data, fileType.minimumBytes);
     let ft = fileType(buffer);
-    if (['txt', 'csv'].indexOf(ext) > -1) return (!ft || (ft && !ft.ext));
+    if(fileKyVl[ext] && (!ft || (ft && !ft.ext))) return true;
     if (!ft) return false;
     return ft.ext == fileKyVl[ext];
 }
+
 module.exports = fileValidator;
