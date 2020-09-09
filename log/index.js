@@ -45,13 +45,13 @@ function log() {
         if (reqId == Number.MAX_VALUE) {
             reqId = counter = 0;
         }
-        logger.trace(reqId + ' ' + req.ip + ' ' + req.method + ' ' + req.originalUrl);
+        logger.info(reqId + ' ' + req.ip + ' ' + req.method + ' ' + req.originalUrl);
 
         let headers = req.headers ? JSON.parse(JSON.stringify(req.headers)) : {};
         deleteProps(headers, reqHeaderNotToLog);
-        logger.trace(reqId + ' ' + 'Request Headers - ' + JSON.stringify(headers));
+        logger.debug(reqId + ' ' + 'Request Headers - ' + JSON.stringify(headers));
         if (req.body) {
-            logger.trace(reqId + ' ' + 'Request Payload - ' + omitKeys(req.body, true));
+            logger.debug(reqId + ' ' + 'Request Payload - ' + omitKeys(req.body, true));
         }
 
         // log response body
@@ -80,7 +80,7 @@ function log() {
             }
             if (res && res.statusCode && res.statusCode == 200
                 && req.method && req.method.toLowerCase() != 'get') {
-                logger.trace(reqId + ' ' + 'Response payload - ' + omitKeys(body));
+                logger.debug(reqId + ' ' + 'Response payload - ' + omitKeys(body));
             }
             next();
         });
